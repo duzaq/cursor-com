@@ -110,6 +110,15 @@ project/
 - Cache e CDN
 - Firewall rules
 
+### 2.7 Nginx Reverse Proxy
+- Gerenciamento dinâmico de configurações do Nginx
+- Roteamento automático de subdomínios para containers
+- Configuração automática de upstreams
+- Reload do Nginx sem downtime
+- Suporte a SSL/TLS (Let's Encrypt via Cloudflare)
+- Rate limiting por serviço
+- Logs por serviço
+
 ---
 
 ## 3. Modelos de Dados
@@ -676,10 +685,16 @@ func (rm *ResourceManager) GetAvailableResources() (*HostResources, error) {
     - Ulimits
 11. **Aguardar saúde** do serviço
 12. **Validar recursos aplicados** (verificar se containers respeitam limites)
-13. **Configurar SSL** automático (Cloudflare)
-14. **Registrar no banco** de dados com recursos alocados
-15. **Iniciar monitoramento** de recursos (CPU, memória, disco)
-16. **Retornar informações** do serviço incluindo recursos configurados
+13. **Configurar Nginx Reverse Proxy**:
+    - Criar configuração de upstream
+    - Criar server block para o subdomínio
+    - Configurar SSL/TLS (via Cloudflare)
+    - Aplicar rate limiting se necessário
+    - Reload do Nginx sem downtime
+14. **Configurar SSL** automático (Cloudflare)
+15. **Registrar no banco** de dados com recursos alocados
+16. **Iniciar monitoramento** de recursos (CPU, memória, disco)
+17. **Retornar informações** do serviço incluindo recursos configurados
 
 ### 7.1 Validação de Recursos
 

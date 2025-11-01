@@ -2,10 +2,12 @@ package api
 
 import (
 	"database/sql"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/services-manager/internal/config"
 	"github.com/services-manager/internal/database"
+	"github.com/services-manager/internal/services"
 )
 
 // Server representa o servidor HTTP
@@ -16,16 +18,29 @@ type Server struct {
 	clientRepo        *database.ClientRepository
 	serviceRepo       *database.ServiceRepository
 	installationRepo *database.InstallationRepository
+	nginxManager      *services.NginxManager
 }
 
 // NewServer cria uma nova inst?ncia do servidor
 func NewServer(cfg *config.Config, db *sql.DB) *Server {
+	nginxConfigDir := os.Getenv("NGINX_CONFIG_DIR")
+	if nginxConfigDir == "" {
+		nginxConfigDir = "./nginx/sites-enabled"
+	}
+
+	nginxManager := services.NewNginxManager(
+		nginxConfigDir,
+		"./nginx/templates",
+		"nginx",
+	)
+
 	server := &Server{
 		cfg:        cfg,
 		db:         db,
 		clientRepo: database.NewClientRepository(db),
 		serviceRepo: database.NewServiceRepository(db),
 		installationRepo: database.NewInstallationRepository(db),
+		nginxManager: nginxManager,
 	}
 
 	server.setupRouter()

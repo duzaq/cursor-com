@@ -38,28 +38,23 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - nginx_logs:/var/log/nginx
+      - nginx_configs:/etc/nginx/sites-enabled
     depends_on:
       - postgres
-    restart: unless-stopped
     networks:
       - services_network
-    environment:
-      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
-    healthcheck:
-      test: ["CMD", "nginx", "-t"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-networks:
-  services_network:
-    driver: bridge
+    restart: unless-stopped
 
 volumes:
   postgres_data:
   redis_data:
   nginx_logs:
+  nginx_configs:
+
+networks:
+  services_network:
+    driver: bridge

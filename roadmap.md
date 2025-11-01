@@ -48,6 +48,7 @@ project/
 - **Docker & Docker Compose** (para containers)
 - **PostgreSQL** (banco de dados)
 - **Redis** (cache e filas)
+- **Nginx Reverse Proxy** (roteamento por subdomínio)
 - **Cloudflare API v4**
 - **Prometheus** (métricas)
 - **Grafana** (dashboards)

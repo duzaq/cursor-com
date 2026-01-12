@@ -1,0 +1,55 @@
+# Template de configura??o para servi?os din?micos
+# Este arquivo ser? gerado automaticamente pelo sistema
+
+# Exemplo de configura??o para servi?o n8n
+server {
+    listen 80;
+    server_name automation.example.com;  # Substituir pelo subdom?nio real
+
+    # Rate limiting
+    limit_req zone=service_limit burst=10 nodelay;
+
+    # Headers de seguran?a
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+
+    # Logs
+    access_log /var/log/nginx/automation.access.log;
+    error_log /var/log/nginx/automation.error.log;
+
+    # Proxy settings
+    proxy_connect_timeout 60s;
+    proxy_send_timeout 60s;
+    proxy_read_timeout 60s;
+
+    # Headers para proxy
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $host;
+
+    # Cloudflare headers
+    proxy_set_header CF-Connecting-IP $http_cf_connecting_ip;
+    proxy_set_header CF-Ray $http_cf_ray;
+    proxy_set_header CF-Visitor $http_cf_visitor;
+
+    # Redirect HTTP to HTTPS (quando Cloudflare SSL estiver configurado)
+    # if ($scheme != "https") {
+    #     return 301 https://$server_name$request_uri;
+    # }
+
+    location / {
+        proxy_pass http://172.17.0.1:5678;  # IP do container Docker
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        proxy_pass http://172.17.0.1:5678/health;
+    }
+}

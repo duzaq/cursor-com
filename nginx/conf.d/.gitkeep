@@ -1,0 +1,5 @@
+# Configura??o padr?o do Nginx
+# Este arquivo ? inclu?do automaticamente pelo nginx.conf principal
+
+# Este diret?rio ser? populado dinamicamente pelo sistema
+# com configura??es de upstream e server blocks
